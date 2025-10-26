@@ -1,7 +1,7 @@
-import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.io.File;
+import java.util.*;
+import javax.swing.*;
 
 public class SignLanguageTranslator {
 
@@ -13,25 +13,59 @@ public class SignLanguageTranslator {
         for (char c = 'A'; c <= 'Z'; c++) {
            signMap.put(c, "../images/" + c + ".jpeg");
         }
-
+        // Step 2: Load number-image mappings (1–10)
+        for (int n = 1; n <= 10; n++) {
+         signMap.put(Character.forDigit(n % 10, 10), "../images/" + n + ".jpeg");
+        }
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter a word: ");
         String word = sc.nextLine().toUpperCase();
 
         // Step 2: Show sign image for each character
-        for (char ch : word.toCharArray()) {
-            if (signMap.containsKey(ch)) {
-                String imagePath = signMap.get(ch);
-                File f = new File(imagePath);
-                if (f.exists()) {
-                    displayImage(imagePath, ch);
-                } else {
-                    System.out.println("Image not found for " + ch + " → " + imagePath);
-                }
-            } else {
-                System.out.println("Invalid character: " + ch);
-            }
+        // for (char ch : word.toCharArray()) {
+        //     if (signMap.containsKey(ch)) {
+        //         String imagePath = signMap.get(ch);
+        //         File f = new File(imagePath);
+        //         if (f.exists()) {
+        //             displayImage(imagePath, ch);
+        //         } else {
+        //             System.out.println("Image not found for " + ch + " → " + imagePath);
+        //         }
+        //     } else {
+        //         System.out.println("Invalid character: " + ch);
+        //     }
+        // }
+        // Step 2: Show sign image for each character or number
+        for (int i = 0; i < word.length(); i++) {
+         char ch = word.charAt(i);
+
+    // ✅ Special handling for "10"
+        if (i < word.length() - 1 && word.substring(i, i + 2).equals("10")) {
+        String imagePath = "../images/10.jpeg";
+        File f = new File(imagePath);
+        if (f.exists()) {
+            displayImage(imagePath, '1'); // label popup as '10'
+        } else {
+            System.out.println("Image not found for 10 → " + imagePath);
         }
+        i++; // skip next character ('0')
+        continue;
+    }
+
+    // ✅ Normal handling for A–Z and 0–9
+    if (signMap.containsKey(ch)) {
+        String imagePath = signMap.get(ch);
+        File f = new File(imagePath);
+        if (f.exists()) {
+            displayImage(imagePath, ch);
+        } else {
+            System.out.println("Image not found for " + ch + " → " + imagePath);
+        }
+    } else {
+        System.out.println("Invalid character: " + ch);
+    }
+}
+
 
         // Optional feature: show full dictionary in sorted order
         System.out.print("\nDo you want to view all alphabets in sorted order? (y/n): ");
